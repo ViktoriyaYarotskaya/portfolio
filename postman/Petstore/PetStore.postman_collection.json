@@ -1,0 +1,434 @@
+{
+	"info": {
+		"_postman_id": "26f731c0-6887-4b00-aa77-fb201cfa8a12",
+		"name": "PetStore",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "22770132"
+	},
+	"item": [
+		{
+			"name": "Add a new pet",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"var jsonData = JSON.parse(responseBody);",
+							"var pet_id = jsonData.id;",
+							"pm.collectionVariables.set(\"petId\", pet_id);"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"id\": {{$randomInt}},\n  \"category\": {\n    \"id\": 2,\n    \"name\": \"cat\"\n  },\n  \"name\": \"sphinx\",\n  \"photoUrls\": [\n    \"https://fikiwiki.com/uploads/posts/2022-02/1644840348_41-fikiwiki-com-p-kartinki-lisikh-kotov-44.jpg\"\n  ],\n  \"tags\": [\n    {\n      \"id\": 1,\n      \"name\": \"#cat\"\n    }\n  ],\n  \"status\": \"available\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{URL}}/pet",
+					"host": [
+						"{{URL}}"
+					],
+					"path": [
+						"pet"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Find pet by ID and change status from body",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"var petid = pm.collectionVariables.get(\"petId\");",
+							"pm.test(\"Change Status\",function(){",
+							"    pm.sendRequest({",
+							"  url: 'https://petstore.swagger.io/v2/pet',",
+							"  method: 'PUT',",
+							"  header: {",
+							"    'Content-Type': 'application/json',",
+							"  },",
+							"  body: {",
+							"    mode: 'raw',",
+							"    raw: JSON.stringify({",
+							"  \"id\": petid,",
+							"  \"category\": {",
+							"    \"id\": 2,",
+							"    \"name\": \"cat\"",
+							"  },",
+							"  \"name\": \"sphinx\",",
+							"  \"photoUrls\": [",
+							"     \"https://fikiwiki.com/uploads/posts/2022-02/1644840348_41-fikiwiki-com-p-kartinki-lisikh-kotov-44.jpg\"",
+							"  ],",
+							"  \"tags\": [",
+							"    {",
+							"      \"id\": 1,",
+							"      \"name\": \"#cat\"",
+							"    }",
+							"  ],",
+							"  \"status\": \"sold\"",
+							"} )",
+							"  }",
+							"},",
+							"function (err,res){",
+							"  console.log(err ? err : res.json());",
+							" ;});",
+							"});",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "{{URL}}/pet/{{petId}}",
+					"host": [
+						"{{URL}}"
+					],
+					"path": [
+						"pet",
+						"{{petId}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Check status (sold)",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"var jsonData = pm.response.json();",
+							"    var statusFromBody = jsonData.status;",
+							"",
+							"pm.test(\"Check status\", function () {",
+							"    ",
+							"    pm.expect(statusFromBody).to.eql('sold');",
+							"});",
+							"console.log(\"Status = \" + statusFromBody);"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "{{URL}}/pet/{{petId}}",
+					"host": [
+						"{{URL}}"
+					],
+					"path": [
+						"pet",
+						"{{petId}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Find pet by ID and change status from urleconded",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"var petid = pm.collectionVariables.get(\"petId\");",
+							"pm.test(\"Change Status\",function(){",
+							"    pm.sendRequest({",
+							"  url: 'https://petstore.swagger.io/v2/pet/' + petid,",
+							"  method: 'POST',",
+							"  header: {",
+							"    'Content-Type': 'application/x-www-form-urlencoded',",
+							"    'Accept' : 'application/json'",
+							"  },",
+							" body: {",
+							"        mode: 'urlencoded',",
+							"        urlencoded: [",
+							"            { key: 'status', value: 'pending' },",
+							"            { key: 'name', value: 'dog' },",
+							"        ]",
+							"    }",
+							"},",
+							"function (err,res){",
+							"  console.log(err ? err : res.json());",
+							" ;});",
+							"});",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "urlencoded",
+					"urlencoded": []
+				},
+				"url": {
+					"raw": "{{URL}}/pet/{{petId}}",
+					"host": [
+						"{{URL}}"
+					],
+					"path": [
+						"pet",
+						"{{petId}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Check status (pending)",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"var jsonData = pm.response.json();",
+							"    var statusFromBody = jsonData.status;",
+							"",
+							"pm.test(\"Check status\", function () {",
+							"    ",
+							"    pm.expect(statusFromBody).to.eql('pending');",
+							"});",
+							"console.log(\"Status = \" + statusFromBody);"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "{{URL}}/pet/{{petId}}",
+					"host": [
+						"{{URL}}"
+					],
+					"path": [
+						"pet",
+						"{{petId}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Change name (urlecoded)",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disabledSystemHeaders": {}
+			},
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Accept",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "urlencoded",
+					"urlencoded": [
+						{
+							"key": "name",
+							"value": "Bob",
+							"type": "text"
+						},
+						{
+							"key": "status",
+							"value": "pending",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "{{URL}}/pet/{{petId}}",
+					"host": [
+						"{{URL}}"
+					],
+					"path": [
+						"pet",
+						"{{petId}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Check name",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"var jsonData = pm.response.json();",
+							"    var nameFromBody = jsonData.name;",
+							"",
+							"pm.test(\"Check name\", function () {",
+							"    ",
+							"    pm.expect(nameFromBody).to.eql('Bob');",
+							"});",
+							"console.log(\"Name = \" + nameFromBody);"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "{{URL}}/pet/{{petId}}",
+					"host": [
+						"{{URL}}"
+					],
+					"path": [
+						"pet",
+						"{{petId}}"
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "URL",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "petId",
+			"value": ""
+		}
+	]
+}
